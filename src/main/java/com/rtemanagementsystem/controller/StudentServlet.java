@@ -21,26 +21,28 @@ public class StudentServlet extends HttpServlet {
 
         String action = req.getParameter("action");
 
-        // 🔹 LIST
-        if ("list".equals(action)) {
+        // LIST
+        if (action == null || action.isEmpty() || "list".equals(action)) {
             List<studentsModel> list = dao.getAllStudents();
             req.setAttribute("students", list);
             req.getRequestDispatcher("/jsp/viewStudents.jsp").forward(req, resp);
         }
 
-        // 🔹 DELETE
+        // DELETE
         else if ("delete".equals(action)) {
             int id = Integer.parseInt(req.getParameter("id"));
             dao.deleteStudent(id);
             resp.sendRedirect("student?action=list");
         }
 
-        // 🔹 EDIT
+        // EDIT
         else if ("edit".equals(action)) {
             int id = Integer.parseInt(req.getParameter("id"));
             studentsModel s = dao.getStudentById(id);
             req.setAttribute("student", s);
-            req.getRequestDispatcher("/jsp/editStudent.jsp").forward(req, resp);
+            req.setAttribute("showEditModal", true);
+            req.setAttribute("students", dao.getAllStudents());
+            req.getRequestDispatcher("/jsp/viewStudents.jsp").forward(req, resp);
         }
     }
 
@@ -49,7 +51,7 @@ public class StudentServlet extends HttpServlet {
 
         String action = req.getParameter("action");
 
-        // 🔹 ADD
+        // ADD
         if ("add".equals(action)) {
 
             String name = req.getParameter("name");
@@ -62,8 +64,10 @@ public class StudentServlet extends HttpServlet {
                 req.setAttribute("name", name);
                 req.setAttribute("email", email);
                 req.setAttribute("course", course);
+                req.setAttribute("showAddModal", true);
+                req.setAttribute("students", dao.getAllStudents());
 
-                req.getRequestDispatcher("/jsp/addStudent.jsp").forward(req, resp);
+                req.getRequestDispatcher("/jsp/viewStudents.jsp").forward(req, resp);
                 return;
             }
 
@@ -75,7 +79,7 @@ public class StudentServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/student?action=list");
         }
 
-        // 🔹 UPDATE
+        // UPDATE
         else if ("update".equals(action)) {
             studentsModel s = new studentsModel(
                     Integer.parseInt(req.getParameter("id")),
@@ -85,7 +89,8 @@ public class StudentServlet extends HttpServlet {
             );
 
             dao.updateStudent(s);
-            resp.sendRedirect("student?action=list");
+            req.getSession().setAttribute("success", "Student updated successfully!");
+            resp.sendRedirect(req.getContextPath() + "/student?action=list");
         }
     }
 }

@@ -22,6 +22,4 @@ public class routineDAO {
             e.printStackTrace();
         }
     }
-
-
 }
