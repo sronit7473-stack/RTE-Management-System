@@ -13,6 +13,31 @@
     <title>Students</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f4f6f8;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-wrap {
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(33, 37, 41, 0.06);
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+    </style>
 </head>
 
 <body>
@@ -24,44 +49,150 @@
 %>
 <div class="container mt-5">
 
-    <h2 class="mb-4">Student List</h2>
+    <div class="page-header">
+        <h2 class="mb-0">Student List</h2>
 
-    <a href="<%= request.getContextPath() %>/jsp/addStudent.jsp"
-       class="btn btn-success">
-        Add Student
-    </a>
+        <button type="button"
+                class="btn btn-success"
+                data-bs-toggle="modal"
+                data-bs-target="#addStudentModal">
+            Add Student
+        </button>
+    </div>
 
-    <table class="table table-bordered table-hover">
+    <div class="table-wrap">
+        <table class="table table-bordered table-hover align-middle">
 
-        <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Course</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <c:forEach var="s" items="${students}">
+            <thead class="table-dark">
             <tr>
-                <td>${s.id}</td>
-                <td>${s.name}</td>
-                <td>${s.email}</td>
-                <td>${s.course}</td>
-
-                <td>
-                    <a href="student?action=edit&id=${s.id}" class="btn btn-warning btn-sm">Edit</a>
-                    <a href="student?action=delete&id=${s.id}" class="btn btn-danger btn-sm">Delete</a>
-                </td>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Course</th>
+                <th>Action</th>
             </tr>
-        </c:forEach>
-        </tbody>
+            </thead>
 
-    </table>
+            <tbody>
+            <c:forEach var="s" items="${students}">
+                <tr>
+                    <td>${s.id}</td>
+                    <td>${s.name}</td>
+                    <td>${s.email}</td>
+                    <td>${s.course}</td>
+
+                    <td>
+                        <button type="button"
+                                class="btn btn-warning btn-sm edit-student-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editStudentModal"
+                                data-student-id="${s.id}"
+                                data-student-name="${s.name}"
+                                data-student-email="${s.email}"
+                                data-student-course="${s.course}">
+                            Edit
+                        </button>
+                        <a href="<%= request.getContextPath() %>/student?action=delete&id=${s.id}" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            </c:forEach>
+            </tbody>
+
+        </table>
+    </div>
 
 </div>
+
+<div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="<%= request.getContextPath() %>/student" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editStudentModalLabel">Edit Student</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" name="action" value="update">
+                    <input type="hidden" id="editStudentId" name="id" value="${student.id}">
+
+                    <label class="form-label" for="editStudentName">Name</label>
+                    <input id="editStudentName" class="form-control mb-3" name="name" value="${student.name}" required>
+
+                    <label class="form-label" for="editStudentEmail">Email</label>
+                    <input id="editStudentEmail" class="form-control mb-3" type="email" name="email" value="${student.email}" required>
+
+                    <label class="form-label" for="editStudentCourse">Course</label>
+                    <input id="editStudentCourse" class="form-control" name="course" value="${student.course}" required>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="<%= request.getContextPath() %>/student" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addStudentModalLabel">Add Student</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" name="action" value="add">
+
+                    <c:if test="${not empty error}">
+                        <div class="alert alert-danger">${error}</div>
+                    </c:if>
+
+                    <label class="form-label" for="studentName">Name</label>
+                    <input id="studentName" class="form-control mb-3" name="name" placeholder="Name" value="${name}" required>
+
+                    <label class="form-label" for="studentEmail">Email</label>
+                    <input id="studentEmail" class="form-control mb-3" type="email" name="email" placeholder="Email" value="${email}" required>
+
+                    <label class="form-label" for="studentCourse">Course</label>
+                    <input id="studentCourse" class="form-control" name="course" placeholder="Course" value="${course}" required>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Add Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.querySelectorAll('.edit-student-btn').forEach((button) => {
+        button.addEventListener('click', () => {
+            document.getElementById('editStudentId').value = button.dataset.studentId;
+            document.getElementById('editStudentName').value = button.dataset.studentName;
+            document.getElementById('editStudentEmail').value = button.dataset.studentEmail;
+            document.getElementById('editStudentCourse').value = button.dataset.studentCourse;
+        });
+    });
+</script>
+<c:if test="${showAddModal}">
+    <script>
+        const addStudentModal = new bootstrap.Modal(document.getElementById('addStudentModal'));
+        addStudentModal.show();
+    </script>
+</c:if>
+<c:if test="${showEditModal}">
+    <script>
+        const editStudentModal = new bootstrap.Modal(document.getElementById('editStudentModal'));
+        editStudentModal.show();
+    </script>
+</c:if>
 
 </body>
 </html>
