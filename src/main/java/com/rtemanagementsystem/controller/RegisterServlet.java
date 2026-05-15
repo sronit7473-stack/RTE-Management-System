@@ -24,7 +24,8 @@ public class  RegisterServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        String username = req.getParameter("username");
+        String username = req.getParameter("user" +
+                "name");
         String password = req.getParameter("password");
         String role = req.getParameter("role");
 

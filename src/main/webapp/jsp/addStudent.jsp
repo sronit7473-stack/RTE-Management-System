@@ -24,6 +24,7 @@
         <input class="form-control mb-2" name="name" placeholder="Name" value="${name}">
         <input class="form-control mb-2" name="email" placeholder="Email" value="${email}">
         <input class="form-control mb-2" name="course" placeholder="Course" value="${course}">
+        
 
         <button class="btn btn-success w-100">Add</button>
     </form>
