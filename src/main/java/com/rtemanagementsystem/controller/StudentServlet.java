@@ -21,21 +21,21 @@ public class StudentServlet extends HttpServlet {
 
         String action = req.getParameter("action");
 
-        // 🔹 LIST
+        //  LIST
         if ("list".equals(action)) {
             List<studentsModel> list = dao.getAllStudents();
             req.setAttribute("students", list);
             req.getRequestDispatcher("/jsp/viewStudents.jsp").forward(req, resp);
         }
 
-        // 🔹 DELETE
+        //  DELETE
         else if ("delete".equals(action)) {
             int id = Integer.parseInt(req.getParameter("id"));
             dao.deleteStudent(id);
             resp.sendRedirect("student?action=list");
         }
 
-        // 🔹 EDIT
+        //  EDIT
         else if ("edit".equals(action)) {
             int id = Integer.parseInt(req.getParameter("id"));
             studentsModel s = dao.getStudentById(id);
@@ -49,7 +49,7 @@ public class StudentServlet extends HttpServlet {
 
         String action = req.getParameter("action");
 
-        // 🔹 ADD
+        // ADD
         if ("add".equals(action)) {
 
             String name = req.getParameter("name");
@@ -75,7 +75,7 @@ public class StudentServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/student?action=list");
         }
 
-        // 🔹 UPDATE
+        // UPDATE
         else if ("update".equals(action)) {
             studentsModel s = new studentsModel(
                     Integer.parseInt(req.getParameter("id")),
