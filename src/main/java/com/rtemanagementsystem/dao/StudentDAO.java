@@ -107,6 +107,30 @@ public class StudentDAO {
 
         return null;
     }
+    public int getTotalStudentCount() {
+        try {
+            Connection con = DbConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement("SELECT COUNT(*) FROM students");
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int getDistinctCourseCount() {
+        try {
+            Connection con = DbConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement("SELECT COUNT(DISTINCT course) FROM students");
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public boolean existsByEmail(String email) {
         try {
             Connection con = DbConnection.getConnection();

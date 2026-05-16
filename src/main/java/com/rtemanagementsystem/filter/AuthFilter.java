@@ -21,7 +21,8 @@ public class AuthFilter implements Filter {
         String path = request.getRequestURI();
 
         // ✅ allow public pages
-        if (path.contains("/login") || path.contains("/register") || path.contains("/logout")) {
+        if (path.contains("/login") || path.contains("/register") || path.contains("/logout")
+                || path.contains("/home") || path.endsWith("/") || path.endsWith("index.jsp")) {
             chain.doFilter(req, res);
             return;
         }
